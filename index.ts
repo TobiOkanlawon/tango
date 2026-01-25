@@ -11,37 +11,61 @@ db.run(`CREATE TABLE IF NOT EXISTS todos (
 )
 `)
 
+class Todo {
+
+  id: number;
+  name: string;
+  date: Date;
+  
+  constructor(id: number, name: string, date: Date) {
+    this.id = id;
+    this.name = name;
+    this.date = date;
+  }
+
+  isValid() {
+    const isIdValid = typeof this.id == "number";
+    const isNameValid = this.name.length > 0;
+    // if the date is present at all, issa win
+    const isDateValid = this.date;
+
+    return isIdValid && isNameValid && isDateValid;
+  }
+  
+}
+
 const Controller = (conn: Database) => {
   return {
     addTodo: (todo: string) => {
       // adds a new todo to the database
 
-      // TODO: figure out an appropriate error response or something idk
-      if(todo == "") return;
+      if(todo == "") throw new Error("todo cannot be empty")
 
       const sql = 'INSERT INTO todos (name) VALUES ($name)'
       
-      const result = conn.query(sql)
+      const result = conn.query(sql).as(Todo)
 
-      console.log("todo created: ", result.get(todo));
-    },
-    listTodo: () => {
-      const sql = 'SELECT * FROM todos'
-      const result = conn.query(sql);
-
-      console.log("all todos", result.all())
+      const todoResult = result.get(todo)
+      
+      return todoResult;
     },
     
-    deleteTodo: (id: string) => {
-      const sql = 'DELETE FROM todos WHERE id = $id'
-      const result = conn.query(sql);
+    listTodo: () => {
+      const sql = 'SELECT * FROM todos'
+      const result = conn.query(sql).as(Todo);
 
-      console.log("todo deleted: ", result.get(id))
+      const todos = result.all()
+      return todos;
+    },
+    
+    deleteTodo: (id: number) => {
+      const sql = 'DELETE FROM todos WHERE id = $id'
+      const query = conn.query(sql);
+
+      query.get(id)
+      return;
     },
   }
 }
 
 const c = Controller(db)
-// c.addTodo("some todo")
-// c.listTodo()
-// c.deleteTodo(4)
