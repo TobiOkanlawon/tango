@@ -12,29 +12,22 @@ db.run(`CREATE TABLE IF NOT EXISTS todos (
  name TEXT NOT NULL,
  date TEXT NOT NULL DEFAULT current_timestamp
 )
-`)
+`);
 
 class Todo {
-
   id: number;
   name: string;
   date: Date;
-  
+
   constructor(id: number, name: string, date: Date) {
     this.id = id;
     this.name = name;
     this.date = date;
   }
 
-  isValid() {
-    const isIdValid = typeof this.id == "number";
-    const isNameValid = this.name.length > 0;
-    // if the date is present at all, issa win
-    const isDateValid = this.date;
-
-    return isIdValid && isNameValid && isDateValid;
+  toString() {
+    return `${this.date} ${this.name}`;
   }
-  
 }
 
 const Controller = (conn: Database) => {
