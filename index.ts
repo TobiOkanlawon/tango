@@ -1,4 +1,7 @@
-import { Database, Statement } from 'bun:sqlite';
+import { Database } from "bun:sqlite";
+import { Command } from "commander";
+
+import * as packageJSON from "./package.json";
 
 // setup
 
