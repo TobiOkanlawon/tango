@@ -2,7 +2,7 @@ import { Database } from "bun:sqlite";
 import { Command } from "commander";
 import { homedir } from "os";
 import { mkdirSync } from "fs";
-import { join } from  'path';
+import { join } from "path";
 
 import * as packageJSON from "./package.json";
 
@@ -25,7 +25,7 @@ switch (environment) {
   default:
     // defaults to the production database location
     const homeDirectory = homedir();
-    const dir = join(homeDirectory, ".local", "share", "tango")
+    const dir = join(homeDirectory, ".local", "share", "tango");
     mkdirSync(dir, { recursive: true });
 
     dbLocation = join(dir, dbName);
@@ -52,7 +52,8 @@ class Todo {
   }
 
   toString() {
-    return `${this.date} ${this.name}`;
+    const formatted = new Date(this.date).toLocaleString();
+    return `${formatted} - ${this.name}`;
   }
 }
 
