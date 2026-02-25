@@ -53,7 +53,7 @@ class Todo {
 
   toString() {
     const formatted = new Date(this.date).toLocaleString();
-    return `${formatted} - ${this.name}`;
+    return `${this.id} ${formatted} - ${this.name}`;
   }
 }
 
@@ -73,7 +73,7 @@ const Controller = (conn: Database) => {
       return todoResult;
     },
 
-    listTodo: () => {
+    listTodos: () => {
       const sql = "SELECT * FROM todos";
       const result = conn.query(sql).as(Todo);
 
