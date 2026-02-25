@@ -82,7 +82,14 @@ const Controller = (conn: Database) => {
       return todos;
     },
 
-    deleteTodo: (id: number) => {
+    getTodo: (id: string) => {
+      const sql = "SELECT * FROM todos WHERE id = $id";
+      const result = conn.query(sql).as(Todo);
+
+      const todo = result.get(id);
+
+      return todo;
+    },
 
     deleteTodo: (id: string) => {
       /* deletes the todo with id and then returns that todo as well */
@@ -144,10 +151,8 @@ program
   .description("get the todos in the system")
   .action(() => {
     try {
-      console.log(formatTodoArray(c.listTodo()));
+      console.log(formatTodoArray(c.listTodos()));
       // this is set to the running command, which sucks for typescript, but I guess we'll roll with it
-
-      console.log("this: ", program.opts());
 
       // if (this.opts().today) {
       // 	console.log("today")
@@ -169,4 +174,38 @@ program
       console.error("An error occurred while trying to delete the todo");
     }
   });
+
+program
+  .command("merge <ids...>")
+  .description("merges different todo lines into a single one with a new ID.")
+  .action((ids: string[]) => {
+    // ids is a string array of all the ids that are passed in as arguments into merge
+
+    if (ids.length == 0) {
+      return;
+    }
+
+    let mergedString = "";
+    // basically, concatenate with an empty line between each entry. If there is an invalid ID, we skip over it (for now, but there should be an error or something later on)
+
+    for (let id of ids) {
+      let todo = c.getTodo(id);
+      if (!todo) {
+        // if returns null then skip the line
+        continue;
+      }
+
+      mergedString += todo.name;
+      mergedString += "\n";
+    }
+
+    for (let id of ids) {
+      c.deleteTodo(id);
+    }
+
+    c.addTodo(mergedString);
+
+    // TODO: this can be improved by listing out the merged todo as a response to the command
+  });
+
 program.parse(process.argv);

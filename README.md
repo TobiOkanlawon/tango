@@ -12,10 +12,11 @@ This project uses the just command runner. To run the project in a development e
 - [x] Have a command for creating a todo (save the todo in a database)
   - [x] Assign it an ID
 - [x] Have a command for listing out all todos
-- [ ] Have a command to delete todos
+- [x] Have a command to delete todos
 - [ ] Have a way to list out todos for only today
 - [ ] Have a way to list out todos for a specific day
 - [ ] Have a review process for todos (to use it like a GTD inbox)
+- [ ] Add a development environment setup command added to the justfile
 - [ ] Integrate automerge and use that as the db instead
 - [ ] Have this work with tango-web or tango-ios or tango-android and be conflict-free
 - [ ] Have the ability to record voice notes
