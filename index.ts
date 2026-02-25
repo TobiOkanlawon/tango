@@ -83,11 +83,23 @@ const Controller = (conn: Database) => {
     },
 
     deleteTodo: (id: number) => {
-      const sql = "DELETE FROM todos WHERE id = $id";
-      const query = conn.query(sql);
+
+    deleteTodo: (id: string) => {
+      /* deletes the todo with id and then returns that todo as well */
+
+      const todoSQL = "SELECT * FROM todos WHERE id = $id";
+      let query = conn.query(todoSQL).as(Todo);
 
       query.get(id);
-      return;
+
+      // TODO: need to test that this is failure-protected or something
+      const todo = query.all();
+
+      const sql = "DELETE FROM todos WHERE id = $id";
+      query = conn.query(sql);
+
+      query.get(id);
+      return todo;
     },
   };
 };
@@ -145,4 +157,16 @@ program
     }
   });
 
+program
+  .command("delete <id>")
+  .description(
+    "deletes an todo with the marked ID. Prints it out to the screen before deletion",
+  )
+  .action((id) => {
+    try {
+      console.log(formatTodoArray(c.deleteTodo(id)));
+    } catch (e) {
+      console.error("An error occurred while trying to delete the todo");
+    }
+  });
 program.parse(process.argv);
